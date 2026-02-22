@@ -1,0 +1,10 @@
+--- STARTING TESTS ---
+Register User 1: success, username: u1_1771796949622
+Create Task for User 1: success, task ID: 3
+Get Tasks User 1: count = 1
+Update Task User 1: success, new status = true
+Register User 2: success, username: u2_1771796949815
+Get Tasks User 2: count = 0
+User 2 Delete User 1 Task Result: error = Task not found or you do not have permission to delete it.
+User 1 Delete Task Result: message = Task deleted successfully
+--- TESTS FINISHED ---
