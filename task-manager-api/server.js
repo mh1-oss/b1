@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const fs = require('fs');
 const path = require('path');
@@ -35,7 +36,10 @@ app.get('/', (req, res) => {
     res.send('Task Manager API is running.');
 });
 
-// Start Server
+// Start Server (ignored by Vercel)
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+// Export for Vercel serverless
+module.exports = app;

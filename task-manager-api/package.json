@@ -1,9 +1,10 @@
 {
   "name": "task-manager-api",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Task Manager REST API with JWT authentication",
+  "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -11,7 +12,7 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
-    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.2",
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",

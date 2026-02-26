@@ -1,11 +1,11 @@
+require('dotenv').config();
 const { Pool } = require('pg');
 
 const pool = new Pool({
-  user: 'postgres',
-  password: '123',
-  host: 'localhost',
-  port: 5432,
-  database: 'a1'
+  connectionString: process.env.DATABASE_URL,
+  ssl: process.env.DATABASE_URL
+    ? { rejectUnauthorized: false }
+    : false,
 });
 
 pool.on('error', (err, client) => {
