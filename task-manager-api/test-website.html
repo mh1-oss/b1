@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مدير المهام - واجهة التجربة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4CAF50;
+            --primary-hover: #45a049;
+            --bg-gradient-1: #0f2027;
+            --bg-gradient-2: #203a43;
+            --bg-gradient-3: #2c5364;
+            --text-main: #ffffff;
+            --text-muted: #b0bec5;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --danger: #ef5350;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2), var(--bg-gradient-3));
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* Glassmorphism Card */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Forms */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 10px;
+            color: white;
+            font-size: 15px;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #4facfe;
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.3);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, #4facfe 0%, #00f2fe 100%);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 242, 254, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 242, 254, 0.6);
+        }
+
+        .btn-logout {
+            background: rgba(239, 83, 80, 0.2);
+            color: var(--danger);
+            border: 1px solid rgba(239, 83, 80, 0.5);
+            margin-top: 20px;
+        }
+
+        .btn-logout:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        .toggle-form {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 14px;
+            color: var(--text-muted);
+            cursor: pointer;
+        }
+        
+        .toggle-form span {
+            color: #4facfe;
+            font-weight: bold;
+        }
+
+        .toggle-form span:hover {
+            text-decoration: underline;
+        }
+
+        /* Task List */
+        .task-list {
+            list-style: none;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        .task-list::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .task-list::-webkit-scrollbar-thumb {
+            background: var(--glass-border);
+            border-radius: 3px;
+        }
+
+        .task-item {
+            background: rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .task-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255,255,255, 0.2);
+        }
+
+        .task-item.completed {
+            border-left: 4px solid var(--primary);
+            opacity: 0.8;
+        }
+
+        .task-info h3 {
+            font-size: 16px;
+            margin-bottom: 4px;
+            transition: color 0.3s;
+        }
+
+        .task-item.completed .task-info h3 {
+            text-decoration: line-through;
+            color: var(--text-muted);
+        }
+
+        .task-info p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 16px;
+            transition: color 0.3s, transform 0.2s;
+            padding: 5px;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .btn-check:hover, .task-item.completed .btn-check {
+            color: var(--primary);
+        }
+
+        .btn-delete:hover {
+            color: var(--danger);
+        }
+
+        /* Util */
+        .hidden { display: none !important; }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 14px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--glass-border);
+        }
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-10px);
+        }
+
+        /* Loading Spinner */
+        .spinner {
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top: 3px solid #fff;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="toast" class="toast">رسالة</div>
+
+    <div class="container">
+        <!-- Auth View -->
+        <div id="authView" class="glass-card">
+            <div class="header">
+                <h1>مدير المهام</h1>
+                <p>سجل دخولك للبدء في إدارة مهامك بسهولة</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm">
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="loginEmail" class="form-control" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" id="loginPassword" class="form-control" placeholder="••••••••" required>
+                </div>
+                <button type="submit" class="btn btn-primary" id="loginBtn">دخول</button>
+                <div class="toggle-form" onclick="toggleAuthMode()">ليس لديك حساب؟ <span>سجل الآن</span></div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="registerForm" class="hidden">
+                <div class="form-group">
+                    <label class="form-label">اسم المستخدم</label>
+                    <input type="text" id="regName" class="form-control" placeholder="أحمد محمد" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">البريد الإلكتروني</label>
+                    <input type="email" id="regEmail" class="form-control" placeholder="user@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">كلمة المرور</label>
+                    <input type="password" id="regPassword" class="form-control" placeholder="••••••••" required minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary" id="regBtn">تسجيل جديد</button>
+                <div class="toggle-form" onclick="toggleAuthMode()">لديك حساب بالفعل؟ <span>سجل الدخول</span></div>
+            </form>
+        </div>
+
+        <!-- Dashboard View -->
+        <div id="dashboardView" class="glass-card hidden">
+            <div class="header" style="text-align: right; display: flex; justify-content: space-between; align-items: center;">
+                <h1 style="font-size: 22px; margin: 0;">المهام <span id="taskCount" style="font-size:14px; color:#b0bec5;">(0)</span></h1>
+                <button onclick="logout()" class="btn btn-logout" style="width: auto; padding: 6px 15px; margin: 0; font-size: 14px;">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i> خروج
+                </button>
+            </div>
+
+            <form id="taskForm" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <input type="text" id="newTaskTitle" class="form-control" placeholder="أضف مهمة جديدة..." required>
+                <button type="submit" class="btn btn-primary" style="width: 50px; flex-shrink: 0;" id="addTaskBtn">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </form>
+
+            <ul class="task-list" id="taskList">
+                <!-- Tasks will be rendered here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+        let token = localStorage.getItem('token');
+        
+        // DOM Elements
+        const authView = document.getElementById('authView');
+        const dashboardView = document.getElementById('dashboardView');
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const taskForm = document.getElementById('taskForm');
+        const taskList = document.getElementById('taskList');
+        const toastEl = document.getElementById('toast');
+        const taskCount = document.getElementById('taskCount');
+
+        let isLoginMode = true;
+
+        // Init Flow
+        if (token) {
+            showDashboard();
+        } else {
+            showAuth();
+        }
+
+        function showToast(message) {
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
+            setTimeout(() => toastEl.classList.remove('show'), 3000);
+        }
+
+        function setLoading(btnId, isLoading, originalText) {
+            const btn = document.getElementById(btnId);
+            if(isLoading) {
+                btn.innerHTML = '<div class="spinner"></div>';
+                btn.disabled = true;
+            } else {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }
+        }
+
+        function toggleAuthMode() {
+            isLoginMode = !isLoginMode;
+            if (isLoginMode) {
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+            } else {
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+            }
+        }
+
+        function showAuth() {
+            authView.classList.remove('hidden');
+            dashboardView.classList.add('hidden');
+        }
+
+        function showDashboard() {
+            authView.classList.add('hidden');
+            dashboardView.classList.remove('hidden');
+            fetchTasks();
+        }
+
+        function logout() {
+            localStorage.removeItem('token');
+            token = null;
+            showAuth();
+            showToast('تم تسجيل الخروج بنجاح');
+            taskList.innerHTML = '';
+        }
+
+        // --- AUTH API ---
+        
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            setLoading('loginBtn', true, 'دخول');
+            try {
+                const res = await fetch(`${API_URL}/auth/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    token = data.token;
+                    localStorage.setItem('token', token);
+                    showToast('تم تسجيل الدخول بنجاح');
+                    loginForm.reset();
+                    showDashboard();
+                } else {
+                    showToast(data.error || 'خطأ في تسجيل الدخول');
+                }
+            } catch (err) {
+                showToast('تعذر الاتصال بالخادم. تأكد أن الخادم يعمل.');
+            } finally {
+                setLoading('loginBtn', false, 'دخول');
+            }
+        });
+
+        registerForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            
+            setLoading('regBtn', true, 'تسجيل جديد');
+            try {
+                const res = await fetch(`${API_URL}/auth/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, email, password })
+                });
+                const data = await res.json();
+                
+                if (res.ok) {
+                    showToast('تم التسجيل بنجاح! يرجى تسجيل الدخول.');
+                    registerForm.reset();
+                    toggleAuthMode();
+                } else {
+                    showToast(data.error || 'خطأ في التسجيل');
+                }
+            } catch (err) {
+                showToast('تعذر الاتصال بالخادم.');
+            } finally {
+                setLoading('regBtn', false, 'تسجيل جديد');
+            }
+        });
+
+        // --- TASKS API ---
+
+        async function fetchTasks() {
+            try {
+                const res = await fetch(`${API_URL}/tasks`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.status === 401 || res.status === 403) {
+                    logout();
+                    return;
+                }
+                
+                const tasks = await res.json();
+                renderTasks(tasks);
+            } catch (err) {
+                showToast('خطأ في جلب المهام');
+            }
+        }
+
+        function renderTasks(tasks) {
+            taskList.innerHTML = '';
+            taskCount.textContent = `(${tasks.length})`;
+            
+            if (tasks.length === 0) {
+                taskList.innerHTML = '<li style="text-align:center; color: var(--text-muted); padding: 20px;">لا توجد مهام حالياً. أضف مهمة جديدة!</li>';
+                return;
+            }
+
+            // Sort so incomplete tasks are top
+            tasks.sort((a,b) => (a.status === b.status)? 0 : a.status? 1 : -1);
+
+            tasks.forEach(task => {
+                const li = document.createElement('li');
+                li.className = `task-item ${task.status ? 'completed' : ''}`;
+                li.innerHTML = `
+                    <div class="task-info">
+                        <h3>${escapeHtml(task.title)}</h3>
+                    </div>
+                    <div class="task-actions">
+                        <button class="action-btn btn-check" onclick="toggleTaskStatus(${task.id}, ${!task.status})" title="تغيير الحالة">
+                            <i class="fa-solid ${task.status ? 'fa-circle-check' : 'fa-circle'}"></i>
+                        </button>
+                        <button class="action-btn btn-delete" onclick="deleteTask(${task.id})" title="حذف">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                taskList.appendChild(li);
+            });
+        }
+
+        taskForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const titleInput = document.getElementById('newTaskTitle');
+            const title = titleInput.value.trim();
+            if(!title) return;
+
+            const iconHtml = '<i class="fa-solid fa-plus"></i>';
+            setLoading('addTaskBtn', true, iconHtml);
+            
+            try {
+                const res = await fetch(`${API_URL}/tasks`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ title, description: '' })
+                });
+                
+                if (res.ok) {
+                    titleInput.value = '';
+                    fetchTasks();
+                    showToast('تمت إضافة المهمة');
+                }
+            } catch (err) {
+                showToast('خطأ في الإضافة');
+            } finally {
+                setLoading('addTaskBtn', false, iconHtml);
+            }
+        });
+
+        async function toggleTaskStatus(id, newStatus) {
+            try {
+                const res = await fetch(`${API_URL}/tasks/${id}`, {
+                    method: 'PUT',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                
+                if (res.ok) {
+                    fetchTasks();
+                }
+            } catch (err) {
+                showToast('خطأ في التحديث');
+            }
+        }
+
+        async function deleteTask(id) {
+            if(!confirm('هل أنت متأكد من حذف هذه المهمة؟')) return;
+            
+            try {
+                const res = await fetch(`${API_URL}/tasks/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                
+                if (res.ok) {
+                    fetchTasks();
+                    showToast('تم الحذف بنجاح');
+                }
+            } catch (err) {
+                showToast('خطأ في الحذف');
+            }
+        }
+
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    </script>
+</body>
+</html>
